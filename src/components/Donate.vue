@@ -38,8 +38,8 @@
         </div>
       </div>
 
-      <div>
-        <div>
+      <div class="next-btn">
+        <div class="next-btn1">
           <button @click="save" class="next-btn1">Save for later</button>
         </div>
 
@@ -238,10 +238,16 @@ div {
   font-size: 15px;
   margin-right: 257px;
 }
-
-.next-btn1 {
+.next-btn {
+  box-sizing: border-box;
   margin-top: 20px;
-  width: 200px;
+  margin-left: -20px;
+}
+.next-btn1 {
+  
+  margin-top: 20px;
+  /* width: 200px; */
+  width:50%;
   height: 50px;
   border-radius: 10px;
   background-color: rgb(223, 219, 219);
@@ -252,8 +258,9 @@ div {
 
 .next-btn2 {
   /* margin: -50px -90px 80px -10px; */
-  width: 200px;
+  /* width: 200px; */
   height: 50px;
+  width:50%;
   border-radius: 10px;
   background-color: rgb(223, 219, 219);
   color: rgb(83, 83, 83);
