@@ -1,10 +1,18 @@
 <template>
   <div>
+    <notifications group="foo" position="top center" />
+
     <header>Donate Here!</header>
     <div class="container-div">
-      <div class="remain">${{ remaining }} still needed for this project!</div>
+      <!-- <button v-tooltip="'$' + remaining + ' still needed for this project!'" /> -->
+      <!-- <div class="remain">
+        " ${{ remaining }} still needed for this project! "
+      </div> -->
       <div class="main">
-        <div class="wrapper">
+        <div
+          class="wrapper"
+          v-tooltip="'$' + remaining + ' still needed for this project!'"
+        >
           <div class="bar" :style="{ width: width + '%' }">{{ count }}$</div>
         </div>
         <div class="quote">
@@ -22,13 +30,13 @@
             class="btn"
             placeholder="Enter amount here!"
           />
-          <button @click="donate" class="donate btn">Donate</button>
+          <button @click="donate" class="donate btn">
+            Give Now
+          </button>
           <div class="blue">Why give ${{ amount }} ??</div>
         </div>
       </div>
-      <!-- <v-flex mt-4 mb-3>
-        <Popup />
-      </v-flex> -->
+
       <div>
         <button @click="save" class="next-btn">Save for later</button>
         <button @click="facebook" class="next-btn">Tell your friends</button>
@@ -38,9 +46,7 @@
 </template>
 
 <script>
-// import Popup from "./Popup";
 export default {
-  // components: { Popup },
   name: "Donate",
   props: {
     msg: String
@@ -49,11 +55,12 @@ export default {
     return {
       count: 0,
       total: 200,
-      amount: 0,
+      amount: null,
       width: 0,
       counter: 0,
       totalcounter: 0,
       remaining: 200
+      // extra: 0
     };
   },
   methods: {
@@ -61,26 +68,51 @@ export default {
       //if check of min 1 and max less then total if its exiddng show error
       this.count += Number(this.amount);
       let tempCollection = this.count;
-      this.width = (tempCollection / this.total) * 100;
+      if (this.remaining <= this.total) {
+        this.width = (tempCollection / this.total) * 100;
+      }
       this.remaining = this.remaining - this.amount;
-      this.amount = 0;
+      this.amount = null;
 
+      //validation if entered amount exceed total amount value
       if (this.remaining == this.total || this.remaining <= 0) {
-        window.alert("Collected sufficient money!");
+        this.$notify({
+          group: "foo",
+          type: "success",
+          title: "Message",
+          text: "Collected sufficient Money!!"
+        });
+        this.remaining = 0;
+        this.width = 100;
+        this.count = this.total;
+        // this.extra = this.extra + this.remaining;
       }
 
       //count number of doners
-      if (this.counter < 11) {
+      if (this.remaining < this.total) {
         this.counter += 1;
       }
       this.totalcounter += 1;
     },
 
     save: function() {
-      window.alert("Saved!");
+      this.$notify({
+        group: "foo",
+        type: "success",
+        title: "Message",
+        text: "Saved for later!!"
+      });
     },
     facebook: function() {}
   }
+  // inputClass: function() {
+  //   var inputField = document.getElementById("inputField").value;
+  //   if (this.input === "") {
+  //     return "invalid";
+  //   } else {
+  //     return "valid";
+  //   }
+  // }
 };
 </script>
 
@@ -90,7 +122,6 @@ header {
   color: red;
 }
 .container-div {
-  /* border: solid gray; */
   width: 40%;
   margin: 0 auto;
   height: 500px;
@@ -106,6 +137,7 @@ header {
   margin: 5% 5% 2% 5%;
   height: 40px;
   text-align: center;
+  padding-top: 13px;
 }
 .main {
   border: solid gray;
