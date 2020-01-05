@@ -1,14 +1,15 @@
 <template>
   <div>
+    <!-- notification bar  -->
     <notifications group="foo" position="top center" />
 
     <header>Donate Now !</header>
 
     <!-- tooltip -->
     <div class="container-div tooltip">
-      <span class="tooltiptext">
-        " ${{ remaining }} still needed for this project! "
-      </span>
+      <span class="tooltiptext"
+        >" ${{ remaining }} still needed for this project! "</span
+      >
       <div class="main">
         <!-- Progress Bar -->
         <div class="wrapper">
@@ -27,40 +28,34 @@
           <input
             type="text"
             v-model="amount"
-            name=""
-            class="btn"
+            name
+            class="btn inputfield"
             placeholder="Enter amount here!"
           />
-          <button @click="donate" class="donate btn">
-            Give Now
-          </button>
+          <button @click="donate" class="donate btn">Give Now</button>
           <div class="blue">Why give ${{ amount }} ??</div>
         </div>
       </div>
 
-      <div class="next-btn">
-        <div class="next-btn1">
-          <button @click="save" class="next-btn1">Save for later</button>
-        </div>
-
-        <!-- Facebook sharing -->
-        <social-sharing
-          url="https://vuejs.org/"
-          title="The Progressive JavaScript Framework"
-          description="Intuitive, Fast and Composable MVVM for building interactive interfaces."
-          quote="Vue is a progressive framework for building user interfaces."
-          hashtags="vuejs,javascript,framework"
-          twitter-user="vuejs"
-          inline-template
-        >
-          <div class="next-btn2">
-            <network network="facebook">
-              <!-- <button class="next-btn2" > -->
-              Tell your friends
-              <!-- </button> -->
-            </network>
-          </div>
-        </social-sharing>
+      <div>
+        <button @click="save" class="button1">Save for later</button>
+        <button class="button2">
+          <!-- facebook post sharing  -->
+          <social-sharing
+            url="https://vuejs.org/"
+            title="The Progressive JavaScript Framework"
+            description="Intuitive, Fast and Composable MVVM for building interactive interfaces."
+            quote="Vue is a progressive framework for building user interfaces."
+            hashtags="vuejs,javascript,framework"
+            twitter-user="vuejs"
+            inline-template
+            class="social-sharing"
+          >
+            <div>
+              <network network="facebook">Tell your friends</network>
+            </div>
+          </social-sharing>
+        </button>
       </div>
     </div>
   </div>
@@ -114,6 +109,7 @@ export default {
         }
         this.totalcounter += 1;
       } else {
+        //if input field is not validate
         this.$notify({
           group: "foo",
           type: "warn",
@@ -125,6 +121,7 @@ export default {
     },
 
     save: function() {
+      //if valid currency is entered then following block will execute
       if (this.checkCurrency()) {
         this.$notify({
           group: "foo",
@@ -141,6 +138,9 @@ export default {
         });
       }
     },
+
+    //currency validation
+    //regular expression for currency/amount -> /^[0-9]+(\.[0-9]{1,2})?$/
     checkCurrency: function() {
       var curRegex = /^[0-9]+(\.[0-9]{1,2})?$/;
       if (this.amount.match(curRegex)) {
@@ -224,11 +224,15 @@ div {
   width: 159px;
   height: 40px;
   font-weight: bold;
+  font-size: 15px;
+}
+.inputfield {
+  padding: 2px;
 }
 .donate {
   background: green;
   height: 48px;
-  border-radius: 6%;
+  border-radius: 3px;
   color: white;
   font-size: 20px;
   margin-left: 40px;
@@ -238,34 +242,32 @@ div {
   font-size: 15px;
   margin-right: 257px;
 }
-.next-btn {
-  box-sizing: border-box;
-  margin-top: 20px;
-  margin-left: -20px;
-}
-.next-btn1 {
-  
-  margin-top: 20px;
-  /* width: 200px; */
-  width:50%;
-  height: 50px;
-  border-radius: 10px;
-  background-color: rgb(223, 219, 219);
-  color: rgb(83, 83, 83);
-  /* font-weight: bold; */
-  margin-left: -20px;
-}
 
-.next-btn2 {
-  /* margin: -50px -90px 80px -10px; */
-  /* width: 200px; */
+.button1 {
+  margin-top: 20px;
+  width: 200px;
   height: 50px;
-  width:50%;
-  border-radius: 10px;
+  border-radius: 3px;
   background-color: rgb(223, 219, 219);
-  color: rgb(83, 83, 83);
-  font-size: 15px;
-  text-decoration: none;
-  /* justify-content: center; */
+  color: rgb(39, 38, 38);
+  margin-right: 40px;
+}
+.button2 {
+  margin-top: 15px;
+  width: 200px;
+  height: 50px;
+  border-radius: 3px;
+  background-color: rgb(223, 219, 219);
+  color: rgb(39, 38, 38);
+  margin-left: 50px;
+}
+.social-sharing {
+  font-size: inherit !important;
+  font-weight: 300 !important;
+  width: 159px;
+  height: 40px;
+  font-weight: bold;
+  padding: 6%;
+  color: rgb(39, 38, 38);
 }
 </style>
