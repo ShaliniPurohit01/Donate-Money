@@ -2,19 +2,20 @@
   <div>
     <notifications group="foo" position="top center" />
 
-    <header>Donate Here!</header>
-    <div class="container-div">
-      <!-- <button v-tooltip="'$' + remaining + ' still needed for this project!'" /> -->
-      <!-- <div class="remain">
+    <header>Donate Now !</header>
+
+    <!-- tooltip -->
+    <div class="container-div tooltip">
+      <span class="tooltiptext">
         " ${{ remaining }} still needed for this project! "
-      </div> -->
+      </span>
       <div class="main">
-        <div
-          class="wrapper"
-          v-tooltip="'$' + remaining + ' still needed for this project!'"
-        >
+        <!-- Progress Bar -->
+        <div class="wrapper">
           <div class="bar" :style="{ width: width + '%' }">{{ count }}$</div>
         </div>
+
+        <!-- Inner Quatation -->
         <div class="quote">
           <div><span>Only 3 days left</span> to fund this project!!</div>
           <p>
@@ -38,8 +39,28 @@
       </div>
 
       <div>
-        <button @click="save" class="next-btn">Save for later</button>
-        <button @click="facebook" class="next-btn">Tell your friends</button>
+        <div>
+          <button @click="save" class="next-btn1">Save for later</button>
+        </div>
+
+        <!-- Facebook sharing -->
+        <social-sharing
+          url="https://vuejs.org/"
+          title="The Progressive JavaScript Framework"
+          description="Intuitive, Fast and Composable MVVM for building interactive interfaces."
+          quote="Vue is a progressive framework for building user interfaces."
+          hashtags="vuejs,javascript,framework"
+          twitter-user="vuejs"
+          inline-template
+        >
+          <div class="next-btn2">
+            <network network="facebook">
+              <!-- <button class="next-btn2" > -->
+              Tell your friends
+              <!-- </button> -->
+            </network>
+          </div>
+        </social-sharing>
       </div>
     </div>
   </div>
@@ -60,64 +81,81 @@ export default {
       counter: 0,
       totalcounter: 0,
       remaining: 200
-      // extra: 0
     };
   },
   methods: {
     donate: function() {
-      //if check of min 1 and max less then total if its exiddng show error
-      this.count += Number(this.amount);
-      let tempCollection = this.count;
-      if (this.remaining <= this.total) {
-        this.width = (tempCollection / this.total) * 100;
-      }
-      this.remaining = this.remaining - this.amount;
-      this.amount = null;
+      //if check of min 1 and max less then total if its exciding show error
+      if (this.checkCurrency()) {
+        this.count += Number(this.amount);
+        let tempCollection = this.count;
+        if (this.remaining <= this.total) {
+          this.width = (tempCollection / this.total) * 100;
+        }
+        this.remaining = this.remaining - this.amount;
+        this.amount = null;
 
-      //validation if entered amount exceed total amount value
-      if (this.remaining == this.total || this.remaining <= 0) {
+        //validation if entered amount exceed total amount value
+        if (this.remaining == this.total || this.remaining <= 0) {
+          this.$notify({
+            group: "foo",
+            type: "success",
+            title: "Message",
+            text: "Collected sufficient Money!!"
+          });
+          this.remaining = 0;
+          this.width = 100;
+          this.count = this.total;
+        }
+
+        //count number of doners
+        if (this.remaining < this.total) {
+          this.counter += 1;
+        }
+        this.totalcounter += 1;
+      } else {
+        this.$notify({
+          group: "foo",
+          type: "warn",
+          title: "Message",
+          text: "Donation amount should be a number."
+        });
+        this.amount = null;
+      }
+    },
+
+    save: function() {
+      if (this.checkCurrency()) {
         this.$notify({
           group: "foo",
           type: "success",
           title: "Message",
-          text: "Collected sufficient Money!!"
+          text: "Saved for later!!"
         });
-        this.remaining = 0;
-        this.width = 100;
-        this.count = this.total;
-        // this.extra = this.extra + this.remaining;
+      } else {
+        this.$notify({
+          group: "foo",
+          type: "warn",
+          title: "Message",
+          text: "Please enter valid amount!!"
+        });
       }
-
-      //count number of doners
-      if (this.remaining < this.total) {
-        this.counter += 1;
+    },
+    checkCurrency: function() {
+      var curRegex = /^[0-9]+(\.[0-9]{1,2})?$/;
+      if (this.amount.match(curRegex)) {
+        return true;
+      } else {
+        return false;
       }
-      this.totalcounter += 1;
-    },
-
-    save: function() {
-      this.$notify({
-        group: "foo",
-        type: "success",
-        title: "Message",
-        text: "Saved for later!!"
-      });
-    },
-    facebook: function() {}
+    }
   }
-  // inputClass: function() {
-  //   var inputField = document.getElementById("inputField").value;
-  //   if (this.input === "") {
-  //     return "invalid";
-  //   } else {
-  //     return "valid";
-  //   }
-  // }
 };
 </script>
 
 <style scoped>
 header {
+  margin-bottom: 15px;
   font-size: 40px;
   color: red;
 }
@@ -126,19 +164,33 @@ header {
   margin: 0 auto;
   height: 500px;
   margin-top: 25px;
-  border-radius: 5%;
+  border-bottom: 0px;
   position: relative;
 }
-.remain {
-  border: gray solid;
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted darkslategrey;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 100%;
   background-color: darkslategrey;
-  color: white;
-  position: relative;
-  margin: 5% 5% 2% 5%;
-  height: 40px;
+  color: #fff;
   text-align: center;
-  padding-top: 13px;
+  border-radius: 6px;
+  padding: 10px;
+  position: relative;
+  z-index: 1;
+  bottom: 14px;
 }
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
 .main {
   border: solid gray;
   position: relative;
@@ -187,14 +239,26 @@ div {
   margin-right: 257px;
 }
 
-.next-btn {
+.next-btn1 {
   margin-top: 20px;
   width: 200px;
   height: 50px;
   border-radius: 10px;
-  background-color: lightgray;
-  color: darkslategray;
-  font-weight: bold;
-  margin-right: 20px;
+  background-color: rgb(223, 219, 219);
+  color: rgb(83, 83, 83);
+  /* font-weight: bold; */
+  margin-left: -20px;
+}
+
+.next-btn2 {
+  /* margin: -50px -90px 80px -10px; */
+  width: 200px;
+  height: 50px;
+  border-radius: 10px;
+  background-color: rgb(223, 219, 219);
+  color: rgb(83, 83, 83);
+  font-size: 15px;
+  text-decoration: none;
+  /* justify-content: center; */
 }
 </style>

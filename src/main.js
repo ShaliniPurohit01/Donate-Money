@@ -7,6 +7,10 @@ Vue.config.productionTip = false;
 Vue.use(Notifications);
 Vue.use(VTooltip);
 
+var SocialSharing = require("vue-social-sharing");
+
+Vue.use(SocialSharing);
+
 new Vue({
   render: h => h(App)
 }).$mount("#app");
