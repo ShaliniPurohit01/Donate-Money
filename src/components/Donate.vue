@@ -32,7 +32,7 @@
             class="btn inputfield"
             placeholder="Enter amount here!"
           />
-          <button @click="donate" class="donate btn">Give Now</button>
+          <button @click="confirm" class="donate btn">Give Now</button>
           <div class="blue">Why give ${{ amount }} ??</div>
         </div>
       </div>
@@ -148,6 +148,29 @@ export default {
       } else {
         return false;
       }
+    },
+
+    confirm: function() {
+      var self = this;
+      this.$dialog
+        .confirm("Please confirm to continue")
+        .then(function() {
+          self.donate();
+          self.$notify({
+            group: "foo",
+            type: "success",
+            title: "Message",
+            text: "Transaction Successfull"
+          });
+        })
+        .catch(function() {
+          self.$notify({
+            group: "foo",
+            type: "warn",
+            title: "Message",
+            text: "you canceled last transaction"
+          });
+        });
     }
   }
 };
